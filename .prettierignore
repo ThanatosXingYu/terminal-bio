@@ -1,0 +1,14 @@
+# Ignore everything
+/*
+
+# Except this folder
+!/src
+!/.github
+!tsconfig.json
+!tsconfig.node.json
+!package.json
+!README.md
+!index.html
+!vite.config.ts
+!.prettierrc
+!.eslintrc.json
