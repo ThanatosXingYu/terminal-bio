@@ -29,6 +29,9 @@ export type TerminalBioConfig = {
   theme: {
     randomOnRefresh: boolean;
   };
+  logging: {
+    enabled: boolean;
+  };
   help: {
     commandDescriptions: Record<CommandName, string>;
     shortcuts: Array<{

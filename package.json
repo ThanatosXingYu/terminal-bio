@@ -10,14 +10,16 @@
     "url": "https://github.com/ThanatosXingYu/terminal-bio.git"
   },
   "scripts": {
-    "dev": "vite --config tooling/vite.config.ts",
+    "dev": "node server/index.mjs --dev",
     "build": "tsc && vite build --config tooling/vite.config.ts",
-    "preview": "vite preview --config tooling/vite.config.ts",
-    "test:once": "vitest run --config tooling/vite.config.ts",
+    "start": "node server/index.mjs",
+    "preview": "node server/index.mjs",
+    "test:server": "node --test server/server.test.mjs",
+    "test:once": "node --test server/server.test.mjs && vitest run --config tooling/vite.config.ts",
     "test": "vitest --config tooling/vite.config.ts",
     "coverage": "vitest run --coverage --config tooling/vite.config.ts",
     "prepare": "husky install",
-    "lint": "eslint src terminal.config.ts tooling/vite.config.ts --ext .ts,.tsx",
+    "lint": "eslint src server terminal.config.mjs tooling/vite.config.ts --ext .ts,.tsx,.mjs",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
   },
@@ -59,7 +61,7 @@
     "vitest": "^0.31.1"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{ts,tsx,mjs}": [
       "eslint",
       "prettier --write"
     ],

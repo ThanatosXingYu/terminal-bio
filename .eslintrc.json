@@ -10,7 +10,15 @@
     "plugin:markdown/recommended",
     "prettier"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "files": ["server/**/*.mjs", "terminal.config.mjs", "tooling/**/*.ts"],
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",

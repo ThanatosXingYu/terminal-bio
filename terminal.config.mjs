@@ -1,8 +1,10 @@
-import type { TerminalBioConfig } from "./src/config/types";
+// @ts-check
 
 /**
  * terminal-bio user configuration.
  * Edit this file to customize the homepage without touching component code.
+ *
+ * @satisfies {import("./src/config/types").TerminalBioConfig}
  */
 export const terminalConfig = {
   site: {
@@ -22,6 +24,11 @@ export const terminalConfig = {
   // true selects a random theme on every page load.
   theme: {
     randomOnRefresh: false,
+  },
+
+  // Command logs are written by the Node server to logs/commands.ndjson.
+  logging: {
+    enabled: true,
   },
 
   help: {
@@ -84,6 +91,6 @@ export const terminalConfig = {
       },
     ],
   },
-} satisfies TerminalBioConfig;
+};
 
 export default terminalConfig;

@@ -1,5 +1,5 @@
 import packageJson from "../../package.json";
-import userConfig from "../../terminal.config";
+import userConfig from "../../terminal.config.mjs";
 import type { TerminalBioConfig } from "./types";
 
 const HELP_COLUMN_WIDTH = 13;

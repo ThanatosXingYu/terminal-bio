@@ -28,6 +28,7 @@ import {
 import { argTab, getCommandRedirectUrl } from "../utils/funcs";
 import { commands, siteConfig } from "../config";
 import { useVisitor } from "../context/VisitorContext";
+import { logCommand } from "../services/commandLogger";
 
 type HistoryEntry = {
   id: number;
@@ -74,6 +75,8 @@ const Terminal = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    void logCommand(inputVal);
+
     const redirectUrl = getCommandRedirectUrl(inputVal);
     if (redirectUrl) window.open(redirectUrl, "_blank");
 
