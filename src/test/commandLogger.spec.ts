@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { COMMAND_LOG_ENDPOINT, logCommand } from "../services/commandLogger";
 
 const successfulResponse = { ok: true } as Response;
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe("command logger", () => {
   it("posts a command with browser context when logging is enabled", async () => {
@@ -58,6 +62,15 @@ describe("command logger", () => {
     await expect(logCommand("   ", { enabled: true, fetcher })).resolves.toBe(
       false
     );
+
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it("disables log requests for static builds", async () => {
+    vi.stubEnv("VITE_COMMAND_LOG_ENABLED", "false");
+    const fetcher = vi.fn();
+
+    await expect(logCommand("help", { fetcher })).resolves.toBe(false);
 
     expect(fetcher).not.toHaveBeenCalled();
   });

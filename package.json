@@ -7,7 +7,7 @@
     "node": ">=18.17",
     "npm": ">=10"
   },
-  "description": "macOS 风格交互式终端个人主页模板",
+  "description": "可自由定制的 macOS 风格交互式终端个人主页，支持多主题、命令补全、PWA 与访客命令日志。",
   "author": "Thanatos",
   "license": "MIT",
   "repository": {

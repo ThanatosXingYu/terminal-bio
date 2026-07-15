@@ -16,6 +16,16 @@ type CommandLoggerOptions = {
   browserContext?: BrowserContext;
 };
 
+const getDefaultLoggingEnabled = (): boolean => {
+  const buildOverride =
+    import.meta.env.VITE_COMMAND_LOG_ENABLED?.trim().toLowerCase();
+
+  if (["true", "1", "yes", "on"].includes(buildOverride ?? "")) return true;
+  if (["false", "0", "no", "off"].includes(buildOverride ?? "")) return false;
+
+  return terminalConfig.logging.enabled;
+};
+
 const getBrowserContext = (): BrowserContext =>
   typeof window === "undefined"
     ? { hostname: "", path: "" }
@@ -28,7 +38,7 @@ export const logCommand = async (
   rawCommand: string,
   options: CommandLoggerOptions = {}
 ): Promise<boolean> => {
-  const enabled = options.enabled ?? terminalConfig.logging.enabled;
+  const enabled = options.enabled ?? getDefaultLoggingEnabled();
   if (!enabled || !rawCommand.trim()) return false;
 
   const fetcher = options.fetcher ?? globalThis.fetch;

@@ -2,6 +2,14 @@
 
 import "styled-components";
 
+interface ImportMetaEnv {
+  readonly VITE_COMMAND_LOG_ENABLED?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 declare module "styled-components" {
   export interface DefaultTheme {
     id: string;

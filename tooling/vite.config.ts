@@ -21,7 +21,7 @@ export default defineConfig({
         lang: "en",
         icons: [
           {
-            src: "/terminal-icon.svg",
+            src: "terminal-icon.svg",
             sizes: "any",
             type: "image/svg+xml",
             purpose: "any maskable",

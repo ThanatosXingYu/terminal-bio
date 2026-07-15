@@ -12,6 +12,7 @@
 !terminal.config.mjs
 !package.json
 !README.md
+!README.en.md
 !index.html
 !.prettierrc
 !.eslintrc.json
