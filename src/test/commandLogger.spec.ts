@@ -27,11 +27,26 @@ describe("command logger", () => {
 
     const request = fetcher.mock.calls[0][1] as RequestInit;
     expect(JSON.parse(String(request.body))).toEqual({
-      command: "projects go 1",
-      truncated: false,
+      command: "  projects go 1  ",
       hostname: "example.com",
       path: "/terminal",
     });
+  });
+
+  it("sends long commands without altering their content", async () => {
+    const fetcher = vi.fn().mockResolvedValue(successfulResponse);
+    const command = `  echo token=raw ${"x".repeat(1500)}  `;
+
+    await expect(
+      logCommand(command, {
+        enabled: true,
+        fetcher,
+        browserContext: { hostname: "example.com", path: "/" },
+      })
+    ).resolves.toBe(true);
+
+    const request = fetcher.mock.calls[0][1] as RequestInit;
+    expect(JSON.parse(String(request.body)).command).toBe(command);
   });
 
   it("does not send disabled or empty command logs", async () => {

@@ -13,7 +13,6 @@ import { join } from "node:path";
 export const COMMAND_LOG_ENDPOINT = "/api/command-log";
 
 const DEFAULT_MAX_BODY_BYTES = 4096;
-const DEFAULT_MAX_COMMAND_LENGTH = 1000;
 const DEFAULT_MAX_FILE_BYTES = 5 * 1024 * 1024;
 const DEFAULT_MAX_ARCHIVES = 5;
 const DEFAULT_RATE_LIMIT = 120;
@@ -107,22 +106,6 @@ const readJsonBody = async (request, maxBodyBytes) => {
 const normalizeOptionalText = (value, maxLength) =>
   typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 
-export const redactCommandSecrets = command =>
-  command
-    .replace(
-      /(--(?:password|passwd|token|secret|api[_-]?key|authorization))(\s+)(?:(?:Bearer|Basic)\s+)?(?:"[^"]*"|'[^']*'|\S+)/gi,
-      "$1$2[REDACTED]"
-    )
-    .replace(
-      /\b(password|passwd|token|secret|api[_-]?key|authorization)\b(\s*[:=]\s*)(?:(?:(?:Bearer|Basic)\s+)?(?:"[^"]*"|'[^']*'|\S+))/gi,
-      "$1$2[REDACTED]"
-    )
-    .replace(/\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+/gi, "$1 [REDACTED]")
-    .replace(
-      /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/g,
-      "[REDACTED_TOKEN]"
-    );
-
 const createRateLimiter = ({ limit, windowMs }) => {
   const clients = new Map();
 
@@ -180,7 +163,6 @@ export const createCommandLogService = ({
   logDirectory,
   trustProxy = false,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
-  maxCommandLength = DEFAULT_MAX_COMMAND_LENGTH,
   maxFileBytes = DEFAULT_MAX_FILE_BYTES,
   maxArchives = DEFAULT_MAX_ARCHIVES,
   rateLimit = DEFAULT_RATE_LIMIT,
@@ -282,25 +264,23 @@ export const createCommandLogService = ({
     }
 
     const rawCommand =
-      typeof payload.command === "string" ? payload.command.trim() : "";
-    if (!rawCommand) {
+      typeof payload.command === "string" ? payload.command : "";
+    if (!rawCommand.trim()) {
       sendJson(response, 400, { error: "command_required" });
       return true;
     }
 
     const now = clock();
     const requestId = randomUUID();
-    const commandWasTruncated =
-      payload.truncated === true || rawCommand.length > maxCommandLength;
+    const userAgent = request.headers["user-agent"];
     const entry = {
       timestamp: now.toISOString(),
       requestId,
       ip,
-      command: redactCommandSecrets(rawCommand.slice(0, maxCommandLength)),
-      truncated: commandWasTruncated,
+      command: rawCommand,
       hostname: normalizeOptionalText(payload.hostname, 255),
       path: normalizeOptionalText(payload.path, 500),
-      userAgent: normalizeOptionalText(request.headers["user-agent"], 500),
+      userAgent: typeof userAgent === "string" ? userAgent : "",
     };
 
     try {

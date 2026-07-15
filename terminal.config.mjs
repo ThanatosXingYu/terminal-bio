@@ -26,7 +26,7 @@ export const terminalConfig = {
     randomOnRefresh: false,
   },
 
-  // Command logs are written by the Node server to logs/commands.ndjson.
+  // The Node server records the submitted command, IP and User-Agent as-is.
   logging: {
     enabled: true,
   },

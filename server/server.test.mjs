@@ -10,7 +10,6 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { redactCommandSecrets } from "./command-log.mjs";
 import { createApplicationServer } from "./index.mjs";
 
 const silentLogger = { error: () => undefined };
@@ -76,22 +75,8 @@ const postCommand = (baseUrl, command, headers = {}) =>
     }),
   });
 
-test("redacts common secret formats", () => {
-  const cases = [
-    ["Authorization: Basic dXNlcjpwYXNz", "Authorization: [REDACTED]"],
-    ["--token cli-secret", "--token [REDACTED]"],
-    ["Bearer standalone-secret", "Bearer [REDACTED]"],
-    ["github_pat_1234567890abcdefghijklmnopqrstuvwxyz", "[REDACTED_TOKEN]"],
-  ];
-
-  for (const [input, expected] of cases) {
-    assert.equal(redactCommandSecrets(input), expected);
-  }
-});
-
-test("serves the app and writes a structured, redacted command log", async context => {
+test("serves the app and writes a structured raw command log", async context => {
   const { application, baseUrl } = await createTestApplication(context, {
-    loggingEnabled: true,
     trustProxy: true,
   });
 
@@ -105,14 +90,12 @@ test("serves the app and writes a structured, redacted command log", async conte
     logging: true,
   });
 
-  const logResponse = await postCommand(
-    baseUrl,
-    "echo token=super-secret Authorization: Bearer header-secret",
-    {
-      "User-Agent": "terminal-bio-test",
-      "X-Forwarded-For": "198.51.100.1, 203.0.113.8",
-    }
-  );
+  const rawCommand = `  echo token=super-secret ${"x".repeat(1100)}  `;
+  const userAgent = `terminal-bio-test/${"u".repeat(600)}`;
+  const logResponse = await postCommand(baseUrl, rawCommand, {
+    "User-Agent": userAgent,
+    "X-Forwarded-For": "198.51.100.1, 203.0.113.8",
+  });
   assert.equal(logResponse.status, 204);
 
   const logContents = await readFile(application.logFilePath, "utf8");
@@ -120,15 +103,10 @@ test("serves the app and writes a structured, redacted command log", async conte
   assert.match(entry.timestamp, /^\d{4}-\d{2}-\d{2}T/);
   assert.match(entry.requestId, /^[a-f0-9-]{36}$/);
   assert.equal(entry.ip, "203.0.113.8");
-  assert.equal(
-    entry.command,
-    "echo token=[REDACTED] Authorization: [REDACTED]"
-  );
-  assert.doesNotMatch(entry.command, /super-secret|header-secret/);
+  assert.equal(entry.command, rawCommand);
   assert.equal(entry.hostname, "example.com");
   assert.equal(entry.path, "/terminal");
-  assert.equal(entry.userAgent, "terminal-bio-test");
-  assert.equal(entry.truncated, false);
+  assert.equal(entry.userAgent, userAgent);
 });
 
 test("does not create a log file when command logging is disabled", async context => {
@@ -138,6 +116,17 @@ test("does not create a log file when command logging is disabled", async contex
 
   const response = await postCommand(baseUrl, "help");
   assert.equal(response.status, 204);
+  await assert.rejects(readFile(application.logFilePath, "utf8"), {
+    code: "ENOENT",
+  });
+});
+
+test("rejects command log request bodies over 4 KiB", async context => {
+  const { application, baseUrl } = await createTestApplication(context);
+
+  const response = await postCommand(baseUrl, "x".repeat(5000));
+  assert.equal(response.status, 413);
+  assert.deepEqual(await response.json(), { error: "request_too_large" });
   await assert.rejects(readFile(application.logFilePath, "utf8"), {
     code: "ENOENT",
   });

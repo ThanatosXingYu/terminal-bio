@@ -2,7 +2,6 @@ import { terminalConfig } from "../config";
 
 export const COMMAND_LOG_ENDPOINT = "/api/command-log";
 
-const MAX_COMMAND_LENGTH = 1000;
 const REQUEST_TIMEOUT_MS = 2000;
 
 type BrowserContext = {
@@ -30,8 +29,7 @@ export const logCommand = async (
   options: CommandLoggerOptions = {}
 ): Promise<boolean> => {
   const enabled = options.enabled ?? terminalConfig.logging.enabled;
-  const command = rawCommand.trim();
-  if (!enabled || !command) return false;
+  if (!enabled || !rawCommand.trim()) return false;
 
   const fetcher = options.fetcher ?? globalThis.fetch;
   if (typeof fetcher !== "function") return false;
@@ -51,8 +49,7 @@ export const logCommand = async (
       keepalive: true,
       signal: controller.signal,
       body: JSON.stringify({
-        command: command.slice(0, MAX_COMMAND_LENGTH),
-        truncated: command.length > MAX_COMMAND_LENGTH,
+        command: rawCommand,
         hostname: browserContext.hostname,
         path: browserContext.path,
       }),

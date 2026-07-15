@@ -52,6 +52,7 @@
 - TypeScript 5
 - Vite 4
 - styled-components 5
+- IBM Plex Mono（npmmirror CDN）
 - Lodash
 - Vitest
 - React Testing Library
@@ -60,8 +61,10 @@
 
 ## 环境要求
 
-- Node.js 18 或更高版本，推荐 Node.js 20 LTS
-- npm 9 或更高版本
+- Node.js 18.17 或更高版本，推荐 Node.js 20 LTS
+- npm 10 或更高版本
+
+本项目统一使用 npm，并通过 `package-lock.json` 固定依赖版本。
 
 ## 本地启动
 
@@ -113,8 +116,11 @@ terminal-bio/
 ├── index.html                 # SEO、分享卡片和站点入口
 ├── tsconfig.json              # 编辑器和浏览器源码类型配置
 ├── package.json
+├── package-lock.json          # npm 依赖锁文件
 └── README.md
 ```
+
+`public/` 用于 favicon、PWA 图标和分享预览图。Vite 会在开发环境按站点根路径提供这些文件，并在构建时将它们复制到 `dist/`，因此该目录需要保留。
 
 ## 个性化配置
 
@@ -161,7 +167,7 @@ logging: {
 ```
 
 - `whoami.mode` 设置为 `"simple"` 时，命令固定输出 `a visitor`，并且不会请求第三方 IP 服务。
-- `whoami.mode` 设置为 `"location"` 时，命令会尝试输出 `a visitor from {英文位置}`。
+- `whoami.mode` 设置为 `"location"` 时，页面首次加载后便会在后台异步获取位置，不阻塞终端操作；`whoami` 会读取已经取得的英文位置。
 - `theme.randomOnRefresh` 设置为 `true` 时，每次加载页面都会从现有主题中随机选择一套。
 - `theme.randomOnRefresh` 设置为 `false` 时，优先恢复访客手动选择的主题；没有有效记录时使用 `dark`。
 - `logging.enabled` 设置为 `true` 时记录用户提交的非空命令，默认开启；设置为 `false` 时前端不再上报，服务端也不会写入。
@@ -182,7 +188,6 @@ logs/commands.ndjson
   "requestId": "REQUEST_UUID",
   "ip": "203.0.113.8",
   "command": "projects go 1",
-  "truncated": false,
   "hostname": "example.com",
   "path": "/",
   "userAgent": "Mozilla/5.0 ..."
@@ -190,12 +195,12 @@ logs/commands.ndjson
 ```
 
 - `timestamp` 和 `ip` 由服务端生成，时间使用 UTC ISO 8601 格式。
-- 命令最长记录 1000 个字符，常见的 `password=...`、`token=...`、`secret=...`、Bearer Token 和 GitHub Token 会被脱敏。
+- 命令和 User-Agent 按收到的原始内容记录，不进行脱敏、裁剪或匿名化；超过 4 KiB 请求体上限的上报会返回 `413`。
 - 默认每个 IP 每分钟最多写入 120 条记录。
 - 当前日志达到 5 MiB 后自动滚动，默认最多保留 5 个归档。
 - 命令日志文件已被 Git 忽略；开发服务会拒绝访问命令日志文件，生产服务也会排除配置的日志目录。
 
-日志会包含 IP、User-Agent 和访客输入，部署前应根据所在地区的隐私要求提供说明并设置合理的保留周期。不要让终端用于输入密码、Token 等敏感内容。
+日志会原样包含 IP、User-Agent 和访客输入。终端中输入的密码、Token 等内容也会进入日志文件。
 
 常用服务端环境变量：
 
@@ -313,7 +318,7 @@ figlet -f "Small Slant" "Your Name"
 2. `https://api.ipapi.is/`
 3. `https://ipwho.is/`
 
-每个服务最多等待 3 秒。成功后只把格式化的英文位置缓存到当前标签页的 `sessionStorage`，缓存有效期为 1 小时，不会由本项目保存访客 IP。全部服务不可用时，`whoami` 回退为：
+页面首次加载后会立即在后台发起定位请求，每个服务最多等待 3 秒。成功后只把格式化的英文位置缓存到当前标签页的 `sessionStorage`，缓存有效期为 1 小时；命令日志开启时，访客提交命令仍会由日志服务记录 IP。全部服务不可用时，`whoami` 回退为：
 
 ```text
 a visitor from somewhere on Earth

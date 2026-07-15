@@ -26,7 +26,7 @@ describe("VisitorProvider", () => {
     vi.mocked(getVisitorLocation).mockReset();
   });
 
-  it("uses the current browser hostname and updates the visitor location", async () => {
+  it("starts a background location lookup when the page mounts", async () => {
     vi.mocked(getVisitorLocation).mockResolvedValue("Jinan, Shandong, China");
 
     render(
@@ -39,6 +39,7 @@ describe("VisitorProvider", () => {
       getCurrentHostname()
     );
     expect(screen.getByTestId("whoami")).toHaveTextContent("a visitor");
+    expect(getVisitorLocation).toHaveBeenCalledTimes(1);
 
     await waitFor(() => {
       expect(screen.getByTestId("whoami")).toHaveTextContent(
