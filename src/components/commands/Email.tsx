@@ -1,5 +1,5 @@
 import { Wrapper } from "../styles/Output.styled";
-import { siteConfig } from "../../config/site";
+import { siteConfig } from "../../config";
 
 const Email: React.FC = () => {
   return (

@@ -5,8 +5,10 @@ import {
   HelpWrapper,
   KeyContainer,
 } from "../styles/Help.styled";
-import { commands } from "../Terminal";
+import { commands, terminalConfig } from "../../config";
 import { generateTabs } from "../../utils/funcs";
+
+const SHORTCUT_KEY_WIDTH = 15;
 
 const Help: React.FC = () => {
   return (
@@ -19,9 +21,15 @@ const Help: React.FC = () => {
         </CmdList>
       ))}
       <KeyContainer>
-        <div>Tab or Ctrl + i&nbsp; =&gt; autocompletes the command</div>
-        <div>Up Arrow {generateTabs(5)} =&gt; go back to previous command</div>
-        <div>Ctrl + l {generateTabs(5)} =&gt; clear the terminal</div>
+        {terminalConfig.help.shortcuts.map(shortcut => (
+          <div key={shortcut.key}>
+            {shortcut.key}
+            {generateTabs(
+              Math.max(0, SHORTCUT_KEY_WIDTH - shortcut.key.length)
+            )}
+            =&gt; {shortcut.description}
+          </div>
+        ))}
       </KeyContainer>
     </HelpWrapper>
   );

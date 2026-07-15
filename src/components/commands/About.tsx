@@ -3,7 +3,7 @@ import {
   HighlightAlt,
   HighlightSpan,
 } from "../styles/About.styled";
-import { siteConfig } from "../../config/site";
+import { siteConfig } from "../../config";
 
 const About: React.FC = () => {
   return (

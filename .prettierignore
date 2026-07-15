@@ -3,12 +3,13 @@
 
 # Except this folder
 !/src
+!/tooling
+!/tooling/**
 !/.github
 !tsconfig.json
-!tsconfig.node.json
+!terminal.config.ts
 !package.json
 !README.md
 !index.html
-!vite.config.ts
 !.prettierrc
 !.eslintrc.json

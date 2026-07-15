@@ -1,9 +1,5 @@
-import { useContext, useEffect } from "react";
-import {
-  checkRedirect,
-  getCurrentCmdArry,
-  isArgInvalid,
-} from "../../utils/funcs";
+import { Fragment, useContext } from "react";
+import { isArgInvalid } from "../../utils/funcs";
 import {
   ProjectContainer,
   ProjectDesc,
@@ -12,24 +8,12 @@ import {
 } from "../styles/Projects.styled";
 import { termContext } from "../Terminal";
 import Usage from "../Usage";
-import { projectLinks } from "../../config/site";
+import { projectLinks, terminalConfig } from "../../config";
 
 const projectIds = projectLinks.map(({ id }) => String(id));
 
 const Projects: React.FC = () => {
-  const { arg, history, rerender } = useContext(termContext);
-
-  /* ===== get current command ===== */
-  const currentCommand = getCurrentCmdArry(history);
-
-  /* ===== check current command is redirect ===== */
-  useEffect(() => {
-    if (checkRedirect(rerender, currentCommand, "projects", projectIds)) {
-      projectLinks.forEach(({ id, url }) => {
-        id === parseInt(arg[1]) && window.open(url, "_blank");
-      });
-    }
-  }, [arg, rerender, currentCommand]);
+  const { arg } = useContext(termContext);
 
   /* ===== check arg is valid ===== */
   const checkArg = () =>
@@ -40,8 +24,12 @@ const Projects: React.FC = () => {
   ) : (
     <div data-testid="projects">
       <ProjectsIntro>
-        “Talk is cheap. Show me the code”? I got you. <br />
-        Here is a project you can explore
+        {terminalConfig.projects.intro.map((line, index) => (
+          <Fragment key={`${index}-${line}`}>
+            {index > 0 && <br />}
+            {line}
+          </Fragment>
+        ))}
       </ProjectsIntro>
       {projectLinks.map(({ id, title, desc }) => (
         <ProjectContainer key={id}>

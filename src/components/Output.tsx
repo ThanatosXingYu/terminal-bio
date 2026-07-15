@@ -15,6 +15,7 @@ import { OutputContainer, UsageDiv } from "./styles/Output.styled";
 import { termContext } from "./Terminal";
 import { useContext } from "react";
 import { useVisitor } from "../context/VisitorContext";
+import { siteConfig } from "../config";
 
 type Props = {
   index: number;
@@ -45,7 +46,7 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
           help: <Help />,
           history: <History />,
           projects: <Projects />,
-          pwd: <GeneralOutput>/home/thanatos</GeneralOutput>,
+          pwd: <GeneralOutput>{siteConfig.homeDirectory}</GeneralOutput>,
           socials: <Socials />,
           themes: <Themes />,
           welcome: <Welcome />,

@@ -25,32 +25,9 @@ import {
   WindowTitle,
   Wrapper,
 } from "./styles/Terminal.styled";
-import { argTab } from "../utils/funcs";
-import { siteConfig } from "../config/site";
+import { argTab, getCommandRedirectUrl } from "../utils/funcs";
+import { commands, siteConfig } from "../config";
 import { useVisitor } from "../context/VisitorContext";
-
-type Command = {
-  cmd: string;
-  desc: string;
-  tab: number;
-}[];
-
-export const commands: Command = [
-  { cmd: "about", desc: `about ${siteConfig.ownerName}`, tab: 8 },
-  { cmd: "clear", desc: "clear the terminal", tab: 8 },
-  { cmd: "echo", desc: "print out anything", tab: 9 },
-  { cmd: "education", desc: "my education background", tab: 4 },
-  { cmd: "email", desc: "show contact information", tab: 8 },
-  { cmd: "gui", desc: "open the project on GitHub", tab: 10 },
-  { cmd: "help", desc: "check available commands", tab: 9 },
-  { cmd: "history", desc: "view command history", tab: 6 },
-  { cmd: "projects", desc: "view projects that I've coded", tab: 5 },
-  { cmd: "pwd", desc: "print current working directory", tab: 10 },
-  { cmd: "socials", desc: "check out my social accounts", tab: 6 },
-  { cmd: "themes", desc: "check available themes", tab: 7 },
-  { cmd: "welcome", desc: "display hero section", tab: 6 },
-  { cmd: "whoami", desc: "about current user", tab: 7 },
-];
 
 type HistoryEntry = {
   id: number;
@@ -97,6 +74,9 @@ const Terminal = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const redirectUrl = getCommandRedirectUrl(inputVal);
+    if (redirectUrl) window.open(redirectUrl, "_blank");
+
     setHistoryEntries(previousEntries => [
       { id: nextHistoryId.current++, raw: inputVal },
       ...previousEntries,

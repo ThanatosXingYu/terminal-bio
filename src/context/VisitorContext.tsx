@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { terminalConfig } from "../config";
 import { getVisitorLocation } from "../services/visitorLocation";
 
 type VisitorStatus = "loading" | "ready" | "unavailable";
@@ -31,12 +32,30 @@ export const getCurrentHostname = () => {
   return window.location.hostname || "localhost";
 };
 
-export const VisitorProvider = ({ children }: { children: ReactNode }) => {
+type VisitorProviderProps = {
+  children: ReactNode;
+  whoamiMode?: "simple" | "location";
+};
+
+export const VisitorProvider = ({
+  children,
+  whoamiMode = terminalConfig.whoami.mode,
+}: VisitorProviderProps) => {
+  const shouldLocate = whoamiMode === "location";
   const [location, setLocation] = useState<string | null>(null);
-  const [status, setStatus] = useState<VisitorStatus>("loading");
+  const [status, setStatus] = useState<VisitorStatus>(
+    shouldLocate ? "loading" : "ready"
+  );
 
   useEffect(() => {
+    if (!shouldLocate) {
+      setLocation(null);
+      setStatus("ready");
+      return;
+    }
+
     let active = true;
+    setStatus("loading");
 
     getVisitorLocation().then(visitorLocation => {
       if (!active) return;
@@ -48,14 +67,15 @@ export const VisitorProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [shouldLocate]);
 
-  const whoami =
-    status === "unavailable"
-      ? "a visitor from somewhere on Earth"
-      : location
-      ? `a visitor from ${location}`
-      : "a visitor";
+  const whoami = !shouldLocate
+    ? "a visitor"
+    : status === "unavailable"
+    ? "a visitor from somewhere on Earth"
+    : location
+    ? `a visitor from ${location}`
+    : "a visitor";
 
   return (
     <visitorContext.Provider

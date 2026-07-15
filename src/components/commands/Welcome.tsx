@@ -8,7 +8,7 @@ import {
   PreWrapper,
   Seperator,
 } from "../styles/Welcome.styled";
-import { siteConfig } from "../../config/site";
+import { siteConfig } from "../../config";
 
 const Welcome: React.FC = () => {
   return (

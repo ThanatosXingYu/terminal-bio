@@ -4,6 +4,7 @@ import { useTheme } from "./hooks/useTheme";
 import GlobalStyle from "./components/styles/GlobalStyle";
 import Terminal from "./components/Terminal";
 import { VisitorProvider } from "./context/VisitorContext";
+import { siteConfig } from "./config";
 
 export const themeContext = createContext<
   ((switchTheme: DefaultTheme) => void) | null
@@ -52,8 +53,11 @@ function App() {
 
   return (
     <>
-      <h1 className="sr-only" aria-label="Thanatos Terminal Bio">
-        Thanatos Terminal Bio
+      <h1
+        className="sr-only"
+        aria-label={`${siteConfig.ownerName} Terminal Bio`}
+      >
+        {siteConfig.ownerName} Terminal Bio
       </h1>
       {themeLoaded && (
         <ThemeProvider theme={selectedTheme}>

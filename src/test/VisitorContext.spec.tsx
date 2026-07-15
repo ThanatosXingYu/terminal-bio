@@ -47,6 +47,17 @@ describe("VisitorProvider", () => {
     });
   });
 
+  it("skips location lookup in simple whoami mode", () => {
+    render(
+      <VisitorProvider whoamiMode="simple">
+        <VisitorOutput />
+      </VisitorProvider>
+    );
+
+    expect(screen.getByTestId("whoami")).toHaveTextContent("a visitor");
+    expect(getVisitorLocation).not.toHaveBeenCalled();
+  });
+
   it("uses an English fallback when all providers are unavailable", async () => {
     vi.mocked(getVisitorLocation).mockResolvedValue(null);
 

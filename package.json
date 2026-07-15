@@ -10,14 +10,14 @@
     "url": "https://github.com/ThanatosXingYu/terminal-bio.git"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test:once": "vitest run",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
+    "dev": "vite --config tooling/vite.config.ts",
+    "build": "tsc && vite build --config tooling/vite.config.ts",
+    "preview": "vite preview --config tooling/vite.config.ts",
+    "test:once": "vitest run --config tooling/vite.config.ts",
+    "test": "vitest --config tooling/vite.config.ts",
+    "coverage": "vitest run --coverage --config tooling/vite.config.ts",
     "prepare": "husky install",
-    "lint": "eslint src vite.config.ts --ext .ts,.tsx",
+    "lint": "eslint src terminal.config.ts tooling/vite.config.ts --ext .ts,.tsx",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
   },

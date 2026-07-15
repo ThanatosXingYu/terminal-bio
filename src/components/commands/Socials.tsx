@@ -1,32 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ProjectsIntro } from "../styles/Projects.styled";
 import { Cmd, CmdDesc, CmdList, HelpWrapper } from "../styles/Help.styled";
-import {
-  checkRedirect,
-  generateTabs,
-  getCurrentCmdArry,
-  isArgInvalid,
-} from "../../utils/funcs";
+import { generateTabs, isArgInvalid } from "../../utils/funcs";
 import { termContext } from "../Terminal";
 import Usage from "../Usage";
-import { socialLinks } from "../../config/site";
+import { socialLinks, terminalConfig } from "../../config";
 
 const socialIds = socialLinks.map(({ id }) => String(id));
 
 const Socials: React.FC = () => {
-  const { arg, history, rerender } = useContext(termContext);
-
-  /* ===== get current command ===== */
-  const currentCommand = getCurrentCmdArry(history);
-
-  /* ===== check current command makes redirect ===== */
-  useEffect(() => {
-    if (checkRedirect(rerender, currentCommand, "socials", socialIds)) {
-      socialLinks.forEach(({ id, url }) => {
-        id === parseInt(arg[1]) && window.open(url, "_blank");
-      });
-    }
-  }, [arg, rerender, currentCommand]);
+  const { arg } = useContext(termContext);
 
   /* ===== check arg is valid ===== */
   const checkArg = () =>
@@ -36,9 +19,9 @@ const Socials: React.FC = () => {
     checkArg()
   ) : (
     <HelpWrapper data-testid="socials">
-      <ProjectsIntro>Here are my social links</ProjectsIntro>
+      <ProjectsIntro>{terminalConfig.socials.intro}</ProjectsIntro>
       {socialLinks.map(({ id, title, url, tab }) => (
-        <CmdList key={title}>
+        <CmdList key={id}>
           <Cmd>{`${id}. ${title}`}</Cmd>
           {generateTabs(tab)}
           <CmdDesc>- {url}</CmdDesc>

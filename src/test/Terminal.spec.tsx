@@ -1,7 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup";
 import { render, screen, userEvent } from "../utils/test-utils";
-import Terminal, { commands } from "../components/Terminal";
+import Terminal from "../components/Terminal";
+import {
+  commands,
+  projectLinks,
+  siteConfig,
+  socialLinks,
+  terminalConfig,
+} from "../config";
 
 // setup function
 function setup(jsx: JSX.Element) {
@@ -66,10 +73,10 @@ describe("Terminal Component", () => {
       );
     });
 
-    it("should return '/home/thanatos' when user type 'pwd' cmd", async () => {
+    it("should return the configured directory for 'pwd'", async () => {
       await user.type(terminalInput, "pwd{enter}");
       expect(screen.getByTestId("latest-output").firstChild?.textContent).toBe(
-        "/home/thanatos"
+        siteConfig.homeDirectory
       );
     });
 
@@ -143,6 +150,43 @@ describe("Terminal Component", () => {
         expect(screen.getByTestId(`${cmd}`)).toBeInTheDocument();
       });
     });
+
+    it("should render the configured help content", async () => {
+      await user.type(terminalInput, "help{enter}");
+      const help = screen.getByTestId("help");
+
+      commands.forEach(({ desc }) => {
+        expect(help).toHaveTextContent(desc);
+      });
+      terminalConfig.help.shortcuts.forEach(({ key, description }) => {
+        expect(help).toHaveTextContent(key);
+        expect(help).toHaveTextContent(description);
+      });
+    });
+
+    it("should render the configured social content", async () => {
+      await user.type(terminalInput, "socials{enter}");
+      const socials = screen.getByTestId("socials");
+
+      expect(socials).toHaveTextContent(terminalConfig.socials.intro);
+      socialLinks.forEach(({ id, title, url }) => {
+        expect(socials).toHaveTextContent(`${id}. ${title}`);
+        expect(socials).toHaveTextContent(url);
+      });
+    });
+
+    it("should render the configured project content", async () => {
+      await user.type(terminalInput, "projects{enter}");
+      const projects = screen.getByTestId("projects");
+
+      terminalConfig.projects.intro.forEach(line => {
+        expect(projects).toHaveTextContent(line);
+      });
+      projectLinks.forEach(({ id, title, desc }) => {
+        expect(projects).toHaveTextContent(`${id}. ${title}`);
+        expect(projects).toHaveTextContent(desc);
+      });
+    });
   });
 
   describe("Redirect commands", () => {
@@ -152,7 +196,11 @@ describe("Terminal Component", () => {
 
     it("should redirect to portfolio website when user type 'gui' cmd", async () => {
       await user.type(terminalInput, "gui{enter}");
-      expect(window.open).toHaveBeenCalled();
+      expect(window.open).toHaveBeenCalledTimes(1);
+      expect(window.open).toHaveBeenCalledWith(
+        siteConfig.repositoryUrl,
+        "_blank"
+      );
       expect(screen.getByTestId("latest-output").firstChild?.textContent).toBe(
         ""
       );
@@ -162,22 +210,21 @@ describe("Terminal Component", () => {
       await user.type(terminalInput, "email{enter}");
       expect(window.open).not.toHaveBeenCalled();
       expect(screen.getByTestId("latest-output").firstChild?.textContent).toBe(
-        "Email is not configured. Contact Thanatos on GitHub: https://github.com/ThanatosXingYu"
+        `Email is not configured. Contact ${siteConfig.ownerName} on GitHub: ${siteConfig.githubProfileUrl}`
       );
     });
 
-    const nums = [1];
-    nums.forEach(num => {
+    projectLinks.forEach(({ id: num }) => {
       it(`should redirect to project URL when user type 'projects go ${num}' cmd`, async () => {
         await user.type(terminalInput, `projects go ${num}{enter}`);
-        expect(window.open).toHaveBeenCalled();
+        expect(window.open).toHaveBeenCalledTimes(1);
       });
     });
 
-    nums.forEach(num => {
+    socialLinks.forEach(({ id: num }) => {
       it(`should redirect to social media when user type 'socials go ${num}' cmd`, async () => {
         await user.type(terminalInput, `socials go ${num}{enter}`);
-        expect(window.open).toHaveBeenCalled();
+        expect(window.open).toHaveBeenCalledTimes(1);
       });
     });
   });

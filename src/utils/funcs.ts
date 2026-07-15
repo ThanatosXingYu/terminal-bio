@@ -1,6 +1,6 @@
 import _ from "lodash";
 import theme from "../components/styles/themes";
-import { projectLinks, socialLinks } from "../config/site";
+import { projectLinks, siteConfig, socialLinks } from "../config";
 
 /**
  * Generates html tabs
@@ -37,25 +37,26 @@ export const isArgInvalid = (
 export const getCurrentCmdArry = (history: string[]) =>
   _.split(history[0].trim(), " ");
 
-/**
- * Check current render makes redirect
- * @param {boolean} rerender - is submitted or not
- * @param {string[]} currentCommand - current submitted command
- * @param {string} command - the command of the function
- * @param {string[]} options - valid redirect ids
- * @returns {boolean} redirect - true | false
- */
-export const checkRedirect = (
-  rerender: boolean,
-  currentCommand: string[],
-  command: string,
-  options: string[]
-): boolean =>
-  rerender && // is submitted
-  currentCommand[0] === command && // current command starts with ('socials'|'projects')
-  currentCommand[1] === "go" && // first arg is 'go'
-  currentCommand.length === 3 && // if num of arg is valid (not `projects go 1 sth`)
-  _.includes(options, currentCommand[2]); // arg last part is one of id
+/** Resolve the external URL for a submitted redirect command. */
+export const getCommandRedirectUrl = (input: string): string | null => {
+  const command = _.split(_.trim(input), " ");
+
+  if (command.length === 1 && command[0] === "gui") {
+    return siteConfig.repositoryUrl;
+  }
+
+  if (command.length !== 3 || command[1] !== "go") return null;
+
+  const links =
+    command[0] === "projects"
+      ? projectLinks
+      : command[0] === "socials"
+      ? socialLinks
+      : [];
+  const target = links.find(({ id }) => String(id) === command[2]);
+
+  return target?.url ?? null;
+};
 
 /**
  * Check current render makes redirect for theme

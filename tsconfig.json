@@ -17,6 +17,6 @@
     "jsx": "react-jsx",
     "types": ["vite-plugin-pwa/client"]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "terminal.config.ts"],
+  "references": [{ "path": "./tooling/tsconfig.node.json" }]
 }
