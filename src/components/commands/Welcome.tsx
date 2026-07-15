@@ -34,7 +34,7 @@ const Welcome: React.FC = () => {
           </PreNameMobile>
         </PreWrapper>
         <div>
-          Welcome to {siteConfig.ownerName}' terminal bio. (Version{" "}
+          Welcome to {siteConfig.ownerName}' homepage. (Version{" "}
           {siteConfig.version})
         </div>
         <Seperator>----</Seperator>

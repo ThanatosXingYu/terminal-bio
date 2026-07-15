@@ -76,38 +76,19 @@ npm run dev
 http://localhost:9487/
 ```
 
-## 构建与检查
+## 构建与运行
 
 ```bash
-# TypeScript 检查并生成生产构建
+# 生成生产构建
 npm run build
 
-# 本地预览生产构建
-npm run preview
-
-# 启动生产服务，也会提供日志接口
+# 启动生产服务和日志接口
 npm start
-
-# 单次运行测试
-npm run test:once
-
-# 只运行服务端日志测试
-npm run test:server
-
-# 监听模式运行测试
-npm run test
-
-# 生成覆盖率
-npm run coverage
-
-# ESLint 检查
-npm run lint
-
-# Prettier 检查
-npm run format:check
 ```
 
 生产构建输出在 `dist/` 目录。启用命令日志时，通过 `npm start` 提供页面和日志接口。
+
+普通使用和部署不需要执行测试、覆盖率、Lint 或格式检查。维护项目代码时，可按需使用 `npm run test:once`、`npm run coverage`、`npm run lint` 和 `npm run format:check` 做开发检查。
 
 ## 项目结构
 
