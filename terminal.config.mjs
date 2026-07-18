@@ -31,6 +31,28 @@ export const terminalConfig = {
     enabled: true,
   },
 
+  email: {
+    address: "574401159@qq.com",
+    // true asks the browser to open the system's default mail client.
+    openClientOnCommand: true,
+  },
+
+  education: {
+    intro: "Here is my education background!",
+    entries: [
+      {
+        degree: "M.Eng. in Cyberspace Security",
+        institution: "Tsinghua University",
+        period: "2021 - 2024",
+      },
+      {
+        degree: "B.S. in Computer Science",
+        institution: "Harvard University",
+        period: "2017 - 2021",
+      },
+    ],
+  },
+
   help: {
     // Keep command names unchanged; edit their descriptions as needed.
     commandDescriptions: {
@@ -38,7 +60,7 @@ export const terminalConfig = {
       clear: "clear the terminal",
       echo: "print out anything",
       education: "my education background",
-      email: "show contact information",
+      email: "send me an email",
       gui: "open the project on GitHub",
       help: "check available commands",
       history: "view command history",
@@ -68,15 +90,39 @@ export const terminalConfig = {
   projects: {
     intro: [
       "“Talk is cheap. Show me the code”? I got you.",
-      "Here is a project you can explore",
+      "Here are some projects you can explore",
     ],
     // Project numbers are generated from the array order.
     links: [
       {
-        title: "terminal-bio",
+        title: "Hikvision-iSecureFucker",
         description:
-          "An interactive macOS-style terminal portfolio built with React and TypeScript.",
-        url: "https://github.com/ThanatosXingYu/terminal-bio",
+          "A PySide6 desktop API testing tool for iSecure Center with AK/SK signing, request debugging, and integrated API docs.",
+        url: "https://github.com/ThanatosXingYu/Hikvision-iSecureFucker",
+      },
+      {
+        title: "shandong-2026-gaokao-plan-ocr",
+        description:
+          "A reproducible OCR and validation pipeline that converts Shandong admission-plan PDFs into verified Excel and JSON datasets.",
+        url: "https://github.com/ThanatosXingYu/shandong-2026-gaokao-plan-ocr",
+      },
+      {
+        title: "GuardCV",
+        description:
+          "A desktop blind-watermarking tool for embedding and recovering traceable text in PDF and image resumes.",
+        url: "https://github.com/ThanatosXingYu/GuardCV",
+      },
+      {
+        title: "astrbot_plugin_qqmanager",
+        description:
+          "An AstrBot QQ group-management plugin with moderation, join review, blacklists, risk controls, and a visual settings panel.",
+        url: "https://github.com/ThanatosXingYu/astrbot_plugin_qqmanager",
+      },
+      {
+        title: "iKun_Keyboard",
+        description:
+          "A configurable Python keyboard soundboard with custom key mappings, startup settings, and packaged releases.",
+        url: "https://github.com/ThanatosXingYu/iKun_Keyboard",
       },
     ],
   },

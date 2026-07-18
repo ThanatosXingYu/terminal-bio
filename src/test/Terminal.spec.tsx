@@ -164,6 +164,19 @@ describe("Terminal Component", () => {
       });
     });
 
+    it("should render the configured education content", async () => {
+      await user.type(terminalInput, "education{enter}");
+      const education = screen.getByTestId("education");
+
+      expect(education).toHaveTextContent(terminalConfig.education.intro);
+      terminalConfig.education.entries.forEach(
+        ({ degree, institution, period }) => {
+          expect(education).toHaveTextContent(degree);
+          expect(education).toHaveTextContent(`${institution} | ${period}`);
+        }
+      );
+    });
+
     it("should render the configured social content", async () => {
       await user.type(terminalInput, "socials{enter}");
       const socials = screen.getByTestId("socials");
@@ -206,11 +219,15 @@ describe("Terminal Component", () => {
       );
     });
 
-    it("should show the configured contact fallback for 'email'", async () => {
+    it("should show the configured email and open the mail client", async () => {
       await user.type(terminalInput, "email{enter}");
-      expect(window.open).not.toHaveBeenCalled();
+      expect(window.open).toHaveBeenCalledTimes(1);
+      expect(window.open).toHaveBeenCalledWith(
+        `mailto:${terminalConfig.email.address}`,
+        "_self"
+      );
       expect(screen.getByTestId("latest-output").firstChild?.textContent).toBe(
-        `Email is not configured. Contact ${siteConfig.ownerName} on GitHub: ${siteConfig.githubProfileUrl}`
+        terminalConfig.email.address
       );
     });
 

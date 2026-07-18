@@ -2,7 +2,12 @@ import { StrictMode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen, userEvent } from "../utils/test-utils";
 import Terminal from "../components/Terminal";
-import { projectLinks, siteConfig, socialLinks } from "../config";
+import {
+  projectLinks,
+  siteConfig,
+  socialLinks,
+  terminalConfig,
+} from "../config";
 
 const submitInStrictMode = async (command: string) => {
   const user = userEvent.setup();
@@ -25,6 +30,18 @@ describe("redirect commands", () => {
     expect(window.open).toHaveBeenCalledWith(
       siteConfig.repositoryUrl,
       "_blank"
+    );
+  });
+
+  it("opens the configured mail client exactly once in React StrictMode", async () => {
+    window.open = vi.fn();
+
+    await submitInStrictMode("email");
+
+    expect(window.open).toHaveBeenCalledTimes(1);
+    expect(window.open).toHaveBeenCalledWith(
+      `mailto:${terminalConfig.email.address}`,
+      "_self"
     );
   });
 

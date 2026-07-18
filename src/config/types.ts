@@ -32,6 +32,18 @@ export type TerminalBioConfig = {
   logging: {
     enabled: boolean;
   };
+  email: {
+    address: string;
+    openClientOnCommand: boolean;
+  };
+  education: {
+    intro: string;
+    entries: Array<{
+      degree: string;
+      institution: string;
+      period: string;
+    }>;
+  };
   help: {
     commandDescriptions: Record<CommandName, string>;
     shortcuts: Array<{

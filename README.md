@@ -43,6 +43,8 @@ npm run dev
 | `whoami.mode`               | `"simple"` 显示 `a visitor`；`"location"` 在后台获取英文位置 |
 | `theme.randomOnRefresh`     | 是否在每次刷新时随机选择主题；关闭时默认使用 `dark`          |
 | `logging.enabled`           | 是否记录访客提交的命令，默认开启                             |
+| `email`                     | 邮箱地址，以及执行 `email` 时是否拉起系统默认邮件应用        |
+| `education`                 | 教育经历介绍、学位、学校和时间                               |
 | `help.commandDescriptions`  | `help` 中每条命令的说明                                      |
 | `help.shortcuts`            | `help` 中的快捷键及说明                                      |
 | `projects.intro` / `.links` | 项目列表的介绍、名称、说明和链接                             |
@@ -60,13 +62,19 @@ theme: {
 logging: {
   enabled: true,
 },
+email: {
+  address: "your-name@example.com",
+  openClientOnCommand: true,
+},
 ```
 
-页面会在首次加载后异步查询访客位置，因此终端输入不会等待定位请求。命令提示符中的域名来自 `window.location.hostname`，无需为 `localhost`、IP 或正式域名单独配置。
+页面会在首次加载后异步查询访客位置，因此终端输入不会等待定位请求。命令提示符中的域名来自 `window.location.hostname`，无需为 `localhost`、IP 或正式域名单独配置。启用 `email.openClientOnCommand` 后，浏览器会通过 `mailto:` 请求系统打开默认邮件应用；具体行为取决于访客的浏览器和系统是否配置了邮件处理程序。
 
 ### Help、Projects 和 Socials
 
 直接修改 `help.commandDescriptions` 中的文字即可调整命令说明，命令名应保持不变。
+
+`education.entries` 中的每一项使用 `degree`、`institution` 和 `period` 配置学位、学校及时间。
 
 向 `projects.links` 添加一个项目：
 
@@ -95,7 +103,7 @@ logging: {
 | ----------------------------------- | ------------------------------------------- |
 | 欢迎文字、FIGlet 姓名横幅、ASCII 图 | `src/components/commands/Welcome.tsx`       |
 | About 内容                          | `src/components/commands/About.tsx`         |
-| 教育经历                            | `src/components/commands/Education.tsx`     |
+| 教育经历和邮箱                      | `terminal.config.mjs`                       |
 | 命令与输出组件的对应关系            | `src/components/Output.tsx`                 |
 | 终端窗口尺寸和标题栏                | `src/components/styles/Terminal.styled.tsx` |
 | 主题颜色                            | `src/components/styles/themes.ts`           |

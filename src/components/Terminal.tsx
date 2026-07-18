@@ -78,7 +78,12 @@ const Terminal = () => {
     void logCommand(inputVal);
 
     const redirectUrl = getCommandRedirectUrl(inputVal);
-    if (redirectUrl) window.open(redirectUrl, "_blank");
+    if (redirectUrl) {
+      window.open(
+        redirectUrl,
+        redirectUrl.startsWith("mailto:") ? "_self" : "_blank"
+      );
+    }
 
     setHistoryEntries(previousEntries => [
       { id: nextHistoryId.current++, raw: inputVal },

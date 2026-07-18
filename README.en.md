@@ -43,6 +43,8 @@ For everyday customization, edit [`terminal.config.mjs`](./terminal.config.mjs) 
 | `whoami.mode`               | `"simple"` prints `a visitor`; `"location"` fetches an English location |
 | `theme.randomOnRefresh`     | Randomize the theme on refresh; otherwise fall back to `dark`           |
 | `logging.enabled`           | Record submitted visitor commands; enabled by default                   |
+| `email`                     | Email address and whether `email` opens the system mail application     |
+| `education`                 | Education introduction, degrees, institutions, and periods              |
 | `help.commandDescriptions`  | Descriptions displayed by `help`                                        |
 | `help.shortcuts`            | Shortcut names and descriptions displayed by `help`                     |
 | `projects.intro` / `.links` | Project list introduction, titles, descriptions, and URLs               |
@@ -60,13 +62,19 @@ theme: {
 logging: {
   enabled: true,
 },
+email: {
+  address: "your-name@example.com",
+  openClientOnCommand: true,
+},
 ```
 
-The page starts location lookup asynchronously after its first load, so terminal input does not wait for the request. The prompt reads its hostname from `window.location.hostname`; no separate configuration is needed for localhost, an IP address, or a production domain.
+The page starts location lookup asynchronously after its first load, so terminal input does not wait for the request. The prompt reads its hostname from `window.location.hostname`; no separate configuration is needed for localhost, an IP address, or a production domain. With `email.openClientOnCommand` enabled, the browser uses `mailto:` to ask the system to open its default mail application; the final behavior depends on the visitor's browser and configured mail handler.
 
 ### Help, Projects, and Socials
 
 Edit the text in `help.commandDescriptions` to customize command descriptions. Keep the built-in command names unchanged.
+
+Each item in `education.entries` uses `degree`, `institution`, and `period` to configure a qualification, school, and date range.
 
 Add a project to `projects.links`:
 
@@ -95,7 +103,7 @@ Project and social IDs are generated from their array order. Do not add an `id`;
 | -------------------------------------- | ------------------------------------------- |
 | Welcome text, FIGlet banner, ASCII art | `src/components/commands/Welcome.tsx`       |
 | About content                          | `src/components/commands/About.tsx`         |
-| Education content                      | `src/components/commands/Education.tsx`     |
+| Education and email                    | `terminal.config.mjs`                       |
 | Command-to-output component mapping    | `src/components/Output.tsx`                 |
 | Terminal dimensions and title bar      | `src/components/styles/Terminal.styled.tsx` |
 | Theme colors                           | `src/components/styles/themes.ts`           |

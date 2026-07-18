@@ -1,6 +1,11 @@
 import _ from "lodash";
 import theme from "../components/styles/themes";
-import { projectLinks, siteConfig, socialLinks } from "../config";
+import {
+  projectLinks,
+  siteConfig,
+  socialLinks,
+  terminalConfig,
+} from "../config";
 
 /**
  * Generates html tabs
@@ -43,6 +48,14 @@ export const getCommandRedirectUrl = (input: string): string | null => {
 
   if (command.length === 1 && command[0] === "gui") {
     return siteConfig.repositoryUrl;
+  }
+
+  if (
+    command.length === 1 &&
+    command[0] === "email" &&
+    terminalConfig.email.openClientOnCommand
+  ) {
+    return `mailto:${terminalConfig.email.address}`;
   }
 
   if (command.length !== 3 || command[1] !== "go") return null;
