@@ -101,12 +101,6 @@ export const terminalConfig = {
         url: "https://github.com/ThanatosXingYu/Hikvision-iSecureFucker",
       },
       {
-        title: "shandong-2026-gaokao-plan-ocr",
-        description:
-          "A reproducible OCR and validation pipeline that converts Shandong admission-plan PDFs into verified Excel and JSON datasets.",
-        url: "https://github.com/ThanatosXingYu/shandong-2026-gaokao-plan-ocr",
-      },
-      {
         title: "GuardCV",
         description:
           "A desktop blind-watermarking tool for embedding and recovering traceable text in PDF and image resumes.",
