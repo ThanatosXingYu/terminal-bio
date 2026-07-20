@@ -43,6 +43,7 @@ For everyday customization, edit [`terminal.config.mjs`](./terminal.config.mjs) 
 | `whoami.mode`               | `"simple"` prints `a visitor`; `"location"` fetches an English location |
 | `theme.randomOnRefresh`     | Randomize the theme on refresh; otherwise fall back to `dark`           |
 | `logging.enabled`           | Record submitted visitor commands; enabled by default                   |
+| `analytics`                 | 51.LA toggle, SDK URL, and initialization options; enabled by default   |
 | `email`                     | Email address and whether `email` opens the system mail application     |
 | `education`                 | Education introduction, degrees, institutions, and periods              |
 | `help.commandDescriptions`  | Descriptions displayed by `help`                                        |
@@ -62,6 +63,20 @@ theme: {
 logging: {
   enabled: true,
 },
+analytics: {
+  enabled: true, // Set to false to disable analytics
+  script: {
+    charset: "UTF-8",
+    id: "LA_COLLECT",
+    src: "//sdk.51.la/js-sdk-pro.min.js",
+  },
+  init: {
+    id: "KPLdq1br4Fo42JcH",
+    ck: "KPLdq1br4Fo42JcH",
+    autoTrack: true,
+    hashMode: true,
+  },
+},
 email: {
   address: "your-name@example.com",
   openClientOnCommand: true,
@@ -69,6 +84,8 @@ email: {
 ```
 
 The page starts location lookup asynchronously after its first load, so terminal input does not wait for the request. The prompt reads its hostname from `window.location.hostname`; no separate configuration is needed for localhost, an IP address, or a production domain. With `email.openClientOnCommand` enabled, the browser uses `mailto:` to ask the system to open its default mail application; the final behavior depends on the visitor's browser and configured mail handler.
+
+51.LA analytics is enabled by default. The build tooling synchronously inserts the SDK and `LA.init`, in that order, before `</head>` without `async` or `defer`. Set `analytics.enabled` to `false` to disable analytics. After changing the analytics settings, restart `npm run dev` or run `npm run build` again.
 
 ### Help, Projects, and Socials
 

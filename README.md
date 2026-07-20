@@ -43,6 +43,7 @@ npm run dev
 | `whoami.mode`               | `"simple"` 显示 `a visitor`；`"location"` 在后台获取英文位置 |
 | `theme.randomOnRefresh`     | 是否在每次刷新时随机选择主题；关闭时默认使用 `dark`          |
 | `logging.enabled`           | 是否记录访客提交的命令，默认开启                             |
+| `analytics`                 | 51.LA 网站统计开关、SDK 地址和初始化参数，默认开启           |
 | `email`                     | 邮箱地址，以及执行 `email` 时是否拉起系统默认邮件应用        |
 | `education`                 | 教育经历介绍、学位、学校和时间                               |
 | `help.commandDescriptions`  | `help` 中每条命令的说明                                      |
@@ -62,6 +63,20 @@ theme: {
 logging: {
   enabled: true,
 },
+analytics: {
+  enabled: true, // 设为 false 可关闭统计
+  script: {
+    charset: "UTF-8",
+    id: "LA_COLLECT",
+    src: "//sdk.51.la/js-sdk-pro.min.js",
+  },
+  init: {
+    id: "KPLdq1br4Fo42JcH",
+    ck: "KPLdq1br4Fo42JcH",
+    autoTrack: true,
+    hashMode: true,
+  },
+},
 email: {
   address: "your-name@example.com",
   openClientOnCommand: true,
@@ -69,6 +84,8 @@ email: {
 ```
 
 页面会在首次加载后异步查询访客位置，因此终端输入不会等待定位请求。命令提示符中的域名来自 `window.location.hostname`，无需为 `localhost`、IP 或正式域名单独配置。启用 `email.openClientOnCommand` 后，浏览器会通过 `mailto:` 请求系统打开默认邮件应用；具体行为取决于访客的浏览器和系统是否配置了邮件处理程序。
+
+51.LA 统计默认启用。构建工具会按照 `analytics` 配置，以同步方式将 SDK 和 `LA.init` 依次插入 `</head>` 前，不使用 `async` 或 `defer`。将 `analytics.enabled` 设为 `false` 即可关闭统计；修改统计配置后，需要重启 `npm run dev`，或重新执行 `npm run build`。
 
 ### Help、Projects 和 Socials
 

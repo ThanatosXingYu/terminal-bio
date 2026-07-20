@@ -31,6 +31,22 @@ export const terminalConfig = {
     enabled: true,
   },
 
+  // Injected synchronously before </head> when enabled.
+  analytics: {
+    enabled: true,
+    script: {
+      charset: "UTF-8",
+      id: "LA_COLLECT",
+      src: "//sdk.51.la/js-sdk-pro.min.js",
+    },
+    init: {
+      id: "KPLdq1br4Fo42JcH",
+      ck: "KPLdq1br4Fo42JcH",
+      autoTrack: true,
+      hashMode: true,
+    },
+  },
+
   email: {
     address: "574401159@qq.com",
     // true asks the browser to open the system's default mail client.

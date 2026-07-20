@@ -32,6 +32,20 @@ export type TerminalBioConfig = {
   logging: {
     enabled: boolean;
   };
+  analytics: {
+    enabled: boolean;
+    script: {
+      charset: string;
+      id: string;
+      src: string;
+    };
+    init: {
+      id: string;
+      ck: string;
+      autoTrack: boolean;
+      hashMode: boolean;
+    };
+  };
   email: {
     address: string;
     openClientOnCommand: boolean;

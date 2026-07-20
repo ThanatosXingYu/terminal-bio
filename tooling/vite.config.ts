@@ -2,8 +2,56 @@
 /// <reference types="vite/client" />
 
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import terminalConfig from "../terminal.config.mjs";
+import type { TerminalBioConfig } from "../src/config/types";
+
+type AnalyticsConfig = TerminalBioConfig["analytics"];
+
+const serializeInlineValue = (value: string) =>
+  JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+
+export const createAnalyticsTags = (
+  analytics: AnalyticsConfig
+): HtmlTagDescriptor[] => {
+  if (!analytics.enabled) return [];
+
+  const { id, ck, autoTrack, hashMode } = analytics.init;
+  const initScript = `LA.init({id:${serializeInlineValue(
+    id
+  )},ck:${serializeInlineValue(
+    ck
+  )},autoTrack:${autoTrack},hashMode:${hashMode}})`;
+
+  return [
+    {
+      tag: "script",
+      attrs: analytics.script,
+      injectTo: "head",
+    },
+    {
+      tag: "script",
+      children: initScript,
+      injectTo: "head",
+    },
+  ];
+};
+
+export const analyticsPlugin = (
+  analytics: AnalyticsConfig = terminalConfig.analytics
+): Plugin => ({
+  name: "terminal-bio-analytics",
+  transformIndexHtml: {
+    order: "post",
+    handler() {
+      return createAnalyticsTags(analytics);
+    },
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,6 +77,7 @@ export default defineConfig({
         ],
       },
     }),
+    analyticsPlugin(),
   ],
   server: {
     port: 9487,
@@ -36,7 +85,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    include: [
+      "src/**/*.{test,spec}.{ts,tsx}",
+      "tooling/**/*.{test,spec}.{ts,tsx}",
+    ],
     setupFiles: "./src/test/setup.ts",
   },
 });

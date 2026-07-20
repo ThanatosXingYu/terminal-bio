@@ -24,7 +24,7 @@
     "test": "vitest --config tooling/vite.config.ts",
     "coverage": "vitest run --coverage --config tooling/vite.config.ts",
     "prepare": "husky install",
-    "lint": "eslint src server terminal.config.mjs tooling/vite.config.ts --ext .ts,.tsx,.mjs",
+    "lint": "eslint src server terminal.config.mjs tooling --ext .ts,.tsx,.mjs",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
   },
